@@ -96,7 +96,7 @@ class GridViewHeaderCell extends React.PureComponent {
 				draggable="true"
 				onDragOver={(evt) => this.dragOver(evt)}
 				onDragStart={(evt) => this.dragStart(evt)} onDrop={(evt) => this.drop(evt)}>
-				<div styles={{ width: (column.fieldName || column.sortField) && column.sortable ? '' : '100%' }}>
+				<div>
 					{this.getCaption()}
 				</div>
 				{(column.fieldName || column.sortField) && column.sortable ? (

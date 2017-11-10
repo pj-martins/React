@@ -5,17 +5,34 @@
 	border-spacing: 0;
 	border-collapse: collapse;
 	width: 100%;
+	table-layout: fixed;
 }
 
 .gridview th {
 	border: 1px solid #a5acb5;
 	background: #e7ebef url(gvHeaderBackground.gif) repeat-x left top;
-	position: relative;
-	overflow: hidden;
-	white-space: nowrap;
     font-weight: normal;
 	text-align: left;
 	padding: 4px;
+}
+
+.gridview thead tr {
+	display:block;
+	position:relative;
+	width: 100%;
+}
+
+.gridview tbody {
+	display: block;
+    overflow: auto;
+	width: 100%;
+	height: 100%;
+}
+
+.gridview tr {
+	width: 100%;
+    display: table;
+    table-layout: fixed;
 }
 
 .gridview td {
@@ -26,15 +43,16 @@
 	cursor: pointer;
 	width: 100%;
 	display: inline-block;
-	margin-right: 14px;
 }
 
 .sort-header div {
 	display:inline-block;
+	margin-left: 1px;
 }
 
 .sort-arrows {
-	margin-left: 10px !important;
+	margin-left: 6px !important;
+	float:right;
 }
 
 .sort-arrow {
@@ -44,11 +62,11 @@
 }
 
 	.sort-arrow.top-empty {
-		margin-top: 1px;
+		margin-top: 2px;
 	}
 
 	.sort-arrow.bottom-empty {
-		margin-top: 9px;
+		margin-top: 10px;
 	}
 
 
@@ -104,11 +122,23 @@
 	background-color: transparent;
 }
 
+.grid-pagination {
+	border: 1px solid #a5acb5;
+	background: #e7ebef url(gvHeaderBackground.gif) repeat-x left top;
+}
+
+.grid-pagination div {
+	display: inline-block;
+	margin-top: 2px;
+}
+
+.pagination-showing {
+	float: right;
+	margin-right: 10px;
+}
+
 .grid-pagination, .grid-pagination .pagination {
 	margin: 0px;
-	margin-bottom: 15px;
-	font-size: 14px;
-	color: #428bca;
 }
 
 .pagination {
@@ -122,10 +152,8 @@
 	.pagination > li {
 		position: relative;
 		float: left;
-		padding: 6px 12px;
+		padding: 1px 5px;
 		margin-left: -1px;
-		color: #337ab7;
-		background-color: #fff;
 		border: 1px solid #ddd;
 	}
 
@@ -134,15 +162,37 @@
 	background-color: #337ab7 !important;
 }
 
-.template-loading {
-	background-color: white;
-	text-align: center;
-	padding: 10px;
+.overlay-background {
+	/* top: 0px;
+	left: 0px;
+	padding-left: 100px;
+	position: fixed;
+	z-index: 1000;
+	height: 100%;
+	width: 100%; */
+	background-color: #808080;
+	opacity: 0.3;
+
+	position: fixed;
+    padding: 2em;
+    left: 50%;
+    top: 0%;
+    transform: translate(-50%, -50%);
 }
 
-.template-inner {
-	display: block;
-	margin: 0 auto;
+.overlay-content {
+	position: fixed;
+	border: 1px solid #000;
+	background-color: #fff;
+	font-weight: bold;
+	height: 100px;
+	width: 300px;
+	z-index: 1000;
+	text-align: center;
+    left: 50%;
+    margin-left: -150px;
+    top: 50%;
+	margin-top: -50px;
 }
 
 .gridview-alternate-row {

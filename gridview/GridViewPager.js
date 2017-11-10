@@ -13,16 +13,16 @@ class GridViewPager extends React.PureComponent {
 	}
 
 	setPage(page) {
-		this.props.pageChanging && this.props.pageChanging();
+		this.props.onPageChanging && this.props.onPageChanging();
 		if (page !== undefined) {
 			if (page < 1) page = 1;
 			let totalPages = this.getTotalPages();
 			if (page > totalPages)
 				page = totalPages;
 
-			this.props.parentGridView.resetData(page);
+			// this.props.parentGridView.resetData(page);
 		}
-		this.props.pageChanged(page);
+		this.props.onPageChanged(page);
 	}
 
 	getPageArray() {
@@ -30,8 +30,8 @@ class GridViewPager extends React.PureComponent {
 		let totalPages = this.getTotalPages();
 		let start = 1;
 		let end = totalPages > 10 ? 10 : totalPages;
-		if (totalPages > 10 && this.props.parentGridView.state.currentPage > 5) {
-			end = this.props.parentGridView.state.currentPage + 4;
+		if (totalPages > 10 && this.props.pageNumber > 5) {
+			end = this.props.pageNumber + 4;
 			if (end > totalPages) {
 				end = totalPages;
 			}
@@ -49,8 +49,7 @@ class GridViewPager extends React.PureComponent {
 	}
 
 	getTotalPages() {
-		let totalItems = (this.props.parentGridView.props.pagingType === PagingType.Auto ? (this.unpagedData ? this.unpagedData.length : 0) : this.parentGridView.props.totalRecords);
-		let totalPages = Math.ceil(totalItems / this.props.parentGridView.state.pageSize);
+		let totalPages = Math.ceil(this.props.totalRows / this.props.pageSize);
 		return totalPages;
 	}
 
@@ -60,49 +59,56 @@ class GridViewPager extends React.PureComponent {
 
 	render() {
 		const {
-			parentGridView
+			pageNumber,
+			pageSize,
+			rowsShown,
+			totalRows,
+			pagingType,
+			onPageSizeChanged,
 		} = this.props;
 
-		this.unpagedData = parentGridView.getUnpagedData();
-
-		if (parentGridView.pagingType >= 2 || !parentGridView.state.displayData || !parentGridView.props.dataSource || parentGridView.props.dataSource.length < 1) return null
-
+		if (pagingType >= PagingType.Disabled || totalRows <= 0) return null
 		return (<div className='show-hide-animation grid-pagination'>
-			{parentGridView.state.pageSize > 0 &&
-				(parentGridView.props.pagingType === PagingType.Auto ? this.unpagedData.length : parentGridView.props.totalRecords) > parentGridView.state.pageSize ?
+			{pageSize > 0 &&
+				totalRows > pageSize ?
 				(<div>
 					<ul className="pagination">
 						<li onClick={() => this.setPage(1)}>First</li>
-						<li onClick={() => this.setPage(parentGridView.state.currentPage - 1)}>Previous</li>
-						<li styles={{ display: !this.moreToLeft ? 'none' : 'inline-block' }} onClick={() => this.setPage(parentGridView.state.currentPage - parentGridView.state.pageSize)}>...</li>
+						<li onClick={() => this.setPage(pageNumber - 1)}>Previous</li>
+						<li style={{ display: !this.moreToLeft ? 'none' : 'inline-block' }} onClick={() => this.setPage(pageNumber - pageSize)}>...</li>
 						{this.getPageArray().map((p, k) => (
-							<li key={k} className={p === parentGridView.state.currentPage ? 'pagination-selected' : ''} onClick={() => this.setPage(p)}>{p}</li>
+							<li key={k} className={p === pageNumber ? 'pagination-selected' : ''} onClick={() => this.setPage(p)}>{p}</li>
 						))}
-						<li styles={{display:!this.moreToRight?'none':'inline-block'}} onClick={() => this.setPage(parentGridView.state.currentPage + parentGridView.state.pageSize)} >...</li>
-					<li onClick={() => this.setPage(parentGridView.state.currentPage + 1)}>Next</li>
-					<li onClick={() => this.gotoLast()}>Last</li>
-			</ul >
+						<li style={{ display: !this.moreToRight ? 'none' : 'inline-block' }} onClick={() => this.setPage(pageNumber + 1)} >...</li>
+						<li onClick={() => this.setPage(pageNumber + 1)}>Next</li>
+						<li onClick={() => this.gotoLast()}>Last</li>
+					</ul >
 					<br />
-		</div >) : null
-		}
-		{(parentGridView.props.pagingType === PagingType.Auto ? this.unpagedData.length : parentGridView.props.totalRecords) > 10 ? (
-		<div>
-		Show: <select value={parentGridView.state.pageSize} onChange={() => this.setPage(1)}> 
-		{this.pageSizes.map((ps, k) => (
-			<option key={k} value={ps.size}>{ps.label}</option>
-		))}
-		</select> &nbsp;&nbsp;&nbsp;&nbsp;
-		Showing {parentGridView.state.displayData.length} of {parentGridView.props.pagingType === 0 ? this.unpagedData.length : parentGridView.props.totalRecords} total records.
-		</div >
-		) : null}
-	</div >);
+				</div>) : null
+			}
+			{totalRows > 10 ? (
+				<div className="pagination-showing">
+					Show: <select value={pageSize} onChange={(evt) => onPageSizeChanged(parseInt(evt.target.value))}>
+						{this.pageSizes.map((ps, k) => (
+							<option key={k} value={ps.size}>{ps.label}</option>
+						))}
+					</select> &nbsp;&nbsp;&nbsp;&nbsp;
+		Showing {rowsShown} of {totalRows} total records.
+		</div>
+			) : null}
+		</div>);
 	}
 }
 
 GridViewPager.propTypes = {
-	parentGridView: PropTypes.any,
-	pageChanging: PropTypes.func,
-	pageChanged: PropTypes.func,
+	pageNumber: PropTypes.number,
+	pageSize: PropTypes.number,
+	totalRows: PropTypes.number,
+	rowsShown: PropTypes.number,
+	pagingType: PropTypes.any,
+	onPageChanging: PropTypes.func,
+	onPageChanged: PropTypes.func,
+	onPageSizeChanged: PropTypes.func,
 };
 
 export default GridViewPager;
